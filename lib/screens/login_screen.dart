@@ -32,13 +32,24 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     // try sign in
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: emailController.text,
-      password: passwordController.text,
-    );
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
 
-    // pop the loading circle
-    Navigator.pop(context);
+      // pop the loading circle
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+      //Wrong Email
+      if (e.code == 'user-not-found') {
+        //show error to user
+        wrongEmailMessage();
+      } else if (e.code == 'wrong-password') {
+        wrongPasswordMessage();
+      }
+    }
   }
 
   @override
@@ -156,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       width: 25,
                     ),
-                    SquareTile(imagePath: 'lib/images/google.png'),
+                    SquareTile(imagePath: 'lib/images/fb.png'),
                   ],
                 ),
                 // const SizedBox(
@@ -186,6 +197,28 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void wrongEmailMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Incorrect Email'),
+        );
+      },
+    );
+  }
+
+  void wrongPasswordMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Incorect Password'),
+        );
+      },
     );
   }
 }
