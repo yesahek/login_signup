@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
         IconButton(onPressed: signOut, icon: const Icon(Icons.logout))
       ]),
       body: Center(
-        child: Text("Welcome " + user.email!.toString()),
+        child: Text("Welcome ${user.email!}"),
       ),
     );
   }
